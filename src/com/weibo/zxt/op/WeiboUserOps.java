@@ -1,7 +1,10 @@
 package com.weibo.zxt.op;
 
+import java.io.IOException;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
@@ -9,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.weibo.zxt.tools.WeiboPageParser;
 import com.weibo.zxt.utils.GlobalValues;
 
 /**
@@ -18,6 +22,16 @@ import com.weibo.zxt.utils.GlobalValues;
  * 
  */
 public class WeiboUserOps {
+	
+	public void getUserWeibo(String uid) throws Exception{
+		HttpGet getMethod = new HttpGet("http://weibo.com/u/"+uid+"?is_search=0&visible=0&is_all=1&is_tag=0&profile_ftype=1&page=1#feedtop");
+		HttpResponse httpResponse = GlobalValues.httpClient.execute(getMethod);
+		String entity = EntityUtils.toString(httpResponse.getEntity());
+		String html = WeiboPageParser.extractHtml(entity);
+		WeiboMessageExtractor wme = new WeiboMessageExtractor();
+		wme.extractWeiboMessage(html);
+	}
+	
 	//获取指定对象的粉丝人数
 	public void getFansNum(String uid) throws Exception{
 		//<em class=\"attach S_txt1\" node-type=\"count\">36<\/em>

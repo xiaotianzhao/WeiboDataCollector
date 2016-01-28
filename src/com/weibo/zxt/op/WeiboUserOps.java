@@ -24,14 +24,28 @@ import com.weibo.zxt.utils.GlobalValues;
 public class WeiboUserOps {
 	
 	public void getUserWeibo(String uid) throws Exception{
+		//获取页面源码
 		HttpGet getMethod = new HttpGet("http://weibo.com/u/"+uid+"?is_search=0&visible=0&is_all=1&is_tag=0&profile_ftype=1&page=1#feedtop");
 		HttpResponse httpResponse = GlobalValues.httpClient.execute(getMethod);
 		String entity = EntityUtils.toString(httpResponse.getEntity());
+		//将页面源码转变为html格式
 		String html = WeiboPageParser.extractHtml(entity);
-		WeiboMessageExtractor wme = new WeiboMessageExtractor();
-		wme.extractWeiboMessage(html);
+		//创建信息抽取器抽取信息，这里抽取的是微博内容
+		InfoExtractor ie = new InfoExtractor();
+		ie.extractWeiboMessage(html);
 	}
 	
+	public void getUserFans(String uid) throws Exception{
+		//获取页面源码
+		HttpGet getMethod = new HttpGet("http://weibo.com/p/100505"+uid+"/follow?page=1#Pl_Official_HisRelation__65");
+		HttpResponse httpResponse = GlobalValues.httpClient.execute(getMethod);
+		String entity = EntityUtils.toString(httpResponse.getEntity());
+		//将页面源码转变为html格式
+		String html = WeiboPageParser.extractHtml(entity);
+		//创建信息抽取器抽取信息，这里抽取的是微博内容
+		InfoExtractor ie = new InfoExtractor();
+		ie.extractUserFans(html);
+	}
 	//获取指定对象的粉丝人数
 	public void getFansNum(String uid) throws Exception{
 		//<em class=\"attach S_txt1\" node-type=\"count\">36<\/em>

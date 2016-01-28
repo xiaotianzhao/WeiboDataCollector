@@ -17,7 +17,12 @@ public class Test {
 		try {
 			wl.Login("393504144@qq.com", "393504144");
 			WeiboUserOps wuo = new WeiboUserOps();
-			wuo.getUserWeibo("5591519974");
+			//解析微博内容			
+			//wuo.getUserWeibo("5591519974");
+			
+			//解析关注的人的有关信息
+			wuo.getUserFans("2010089325");
+			
 			/*WeiboMessageOps wmo = new WeiboMessageOps();
 			//WeiboUserOps wuo = new WeiboUserOps();
 			//wuo.getFansNum("3820652804");

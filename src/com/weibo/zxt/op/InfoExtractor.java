@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.weibo.zxt.database.models.WeiboFollower;
 import com.weibo.zxt.database.models.WeiboMessage;
 import com.weibo.zxt.database.models.WeiboUser;
 
@@ -129,38 +130,67 @@ public class InfoExtractor {
 				Elements fansLis = eleUl.select("li[class=follow_item S_line2]");
 				
 				for (Element fan : fansLis){
+					WeiboFollower weiboFollower = new WeiboFollower();
 					String fanHtml = fan.html();
 					Document fanDoc = Jsoup.parse(fanHtml);
 					//解析用户名
 					Elements elesUserName = fanDoc.select("dl[class=clearfix] dd[class=mod_info S_line1] div[class=info_name W_fb W_f14] a[class=S_txt1]");
 					if (elesUserName != null && elesUserName.size() > 0){
-						System.out.println("UserName:"+elesUserName.get(0).text());
+//						System.out.println("UserName:"+elesUserName.get(0).text());
+						weiboFollower.setUsername(elesUserName.get(0).text());
 					}
 					
 					//解析用户uid
 					if (elesUserName != null && elesUserName.size() > 0){
-						System.out.println("Uid:"+elesUserName.get(0).attr("usercard").substring(3,13));
+//						System.out.println("Uid:"+elesUserName.get(0).attr("usercard").substring(3,13));
+						weiboFollower.setUid(elesUserName.get(0).attr("usercard").substring(3,13));
 					}
 					
 					//解析用户性别
 					Elements elesUserGenderFemale = fanDoc.select("dl[class=clearfix] dd[class=mod_info S_line1] div[class=info_name W_fb W_f14] a i[class=W_icon icon_female]");
 					Elements elesUserGenderMale = fanDoc.select("dl[class=clearfix] dd[class=mod_info S_line1] div[class=info_name W_fb W_f14] a i[class=W_icon icon_male]");					
 					if (elesUserGenderFemale != null && elesUserGenderFemale.size() > 0){
-						System.out.println("Gender:"+"女");
+						weiboFollower.setGender("女");
 					}else if (elesUserGenderMale != null && elesUserGenderMale.size() > 0){
-						System.out.println("Gender:"+"男");
+						weiboFollower.setGender("男");
 					}else{
-						System.out.println("Gender:"+"未知");
+						weiboFollower.setGender("未知");
 					}
 					
-					//解析有关状态信息
-					Elements elesUserAttentionNum = fanDoc.select("dl[class=clearfix] dd[class=mod_info S_line1] div[class=info_name W_fb W_f14] a i[class=W_icon icon_female]");
+					//解析用户关联信息，关注数，粉丝数，微博数
+					Elements elesConnect = fanDoc.select("dl[class=clearfix] dd[class=mod_info S_line1] div[class=info_connect] span em a");
+					if (elesConnect != null && elesConnect.size() == 3){
+						
+						weiboFollower.setFocusNum(Integer.parseInt(elesConnect.get(0).text()));
+						weiboFollower.setFollowerNum(Integer.parseInt(elesConnect.get(1).text()));
+						weiboFollower.setWeiboNum(Integer.parseInt(elesConnect.get(2).text()));
+					}
 					
+					//解析用户地址
+					Elements eleLocation = fanDoc.select("dl[class=clearfix] dd[class=mod_info S_line1] div[class=info_add] span");
+					
+					if (eleLocation != null && eleLocation.size() == 1){
+						weiboFollower.setLocation(eleLocation.get(0).text());
+					}
+					
+					//解析用户简介
+					Elements eleIntro = fanDoc.select("dl[class=clearfix] dd[class=mod_info S_line1] div[class=info_intro] span");
+					
+					if (eleIntro != null && eleIntro.size() == 1){
+						weiboFollower.setIntro(eleIntro.get(0).text());
+					}
+					
+					System.out.println(weiboFollower);
 					System.out.println("===============================");
 				}
 				
 			}
 		}
 		return fans;
+	}
+	
+	public void extractUserConnect(String html) {
+		// TODO Auto-generated method stub
+		
 	}
 }

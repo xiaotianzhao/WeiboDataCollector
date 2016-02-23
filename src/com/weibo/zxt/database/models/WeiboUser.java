@@ -12,6 +12,7 @@ import java.util.List;
 public class WeiboUser {
 	private String uid;
 	private String username;
+	private String gender;
 	private Date birthday;
 	private String location;
 	private List<String> tags;
@@ -62,10 +63,16 @@ public class WeiboUser {
 	public void setAttentionNum(int attentionNum) {
 		this.attentionNum = attentionNum;
 	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
 	@Override
 	public String toString() {
-		return "WeiboUser [uid=" + uid + ", username=" + username
-				+ ", birthday=" + birthday + ", location=" + location
+		return "WeiboUser [uid=" + uid + ", username=" + username + ", gender="
+				+ gender + ", birthday=" + birthday + ", location=" + location
 				+ ", tags=" + tags + ", fansNum=" + fansNum + ", attentionNum="
 				+ attentionNum + "]";
 	}
